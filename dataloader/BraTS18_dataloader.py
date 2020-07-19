@@ -24,17 +24,20 @@ import torch
 
 
 def BraTS18data(data_seed, data_split):
+    print(data_split)
 
     # Set random seed
     data_seed = data_seed
     np.random.seed(data_seed)
 
     # Create image list
-    HGG_imgList = sorted(glob('data/BraTS2018/HGG/img_*.npy'))
-    HGG_maskList = sorted(glob('data/BraTS2018/HGG/mask_*.npy'))
+    HGG_imgList = sorted(glob('data/BraTS18/img_*.npy'))
+    HGG_maskList = sorted(glob('data/BraTS18/mask_*.npy'))
 
     # Random selection for training, validation and testing
     HGG_list = [list(pair) for pair in zip(HGG_imgList, HGG_maskList)]
+
+    print(HGG_list)
 
     np.random.shuffle(HGG_list)
 
@@ -57,11 +60,14 @@ def BraTS18data(data_seed, data_split):
         test_img_list, test_mask_list = map(list, zip(*(HGG_list[160:210])))
 
     elif data_split == '10L0U' or data_split == '10L110U':
-        train_labeled_img_list, train_labeled_mask_list = map(list, zip(*(HGG_list[0:  10])))
-        train_unlabeled_img_list, train_unlabeled_mask_list = map(list, zip(*(HGG_list[10:  120])))
-        val_labeled_img_list, val_labeled_mask_list = map(list, zip(*(HGG_list[120:160])))
-        val_unlabeled_img_list, val_unlabeled_mask_list = map(list, zip(*(HGG_list[120:160])))
-        test_img_list, test_mask_list = map(list, zip(*(HGG_list[160:210])))
+
+        print(len(HGG_list))
+
+        train_labeled_img_list, train_labeled_mask_list = map(list, zip(*(HGG_list[0:  3])))
+        train_unlabeled_img_list, train_unlabeled_mask_list = map(list, zip(*(HGG_list[3:  6])))
+        val_labeled_img_list, val_labeled_mask_list = map(list, zip(*(HGG_list[6:8])))
+        val_unlabeled_img_list, val_unlabeled_mask_list = map(list, zip(*(HGG_list[6:8])))
+        test_img_list, test_mask_list = map(list, zip(*(HGG_list[8:10])))
 
     elif data_split == '50L0U' or data_split == '50L70U':
         train_labeled_img_list, train_labeled_mask_list = map(list, zip(*(HGG_list[0:  50])))
@@ -158,8 +164,8 @@ def BraTS18data(data_seed, data_split):
                              ])
                              )
 
-    # device_type = 'cpu'
-    device_type = 'cuda'
+    device_type = 'cpu'
+    # device_type = 'cuda'
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     device = torch.device(device_type)
     dataset_sizes = {'trainLabeled': len(trainLabeledDataset), 'trainUnlabeled': len(trainUnlabeledDataset),
